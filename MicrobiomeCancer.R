@@ -2,7 +2,7 @@ install.packages("usethis")
 library(usethis)
 use_git_config(user.name = 'faithorbeta', user.email = 'faithmarian.orbeta@students.mq.edu.au')
 
-
+##hi
 data = Dataset_for_Faith
 head = data
 
