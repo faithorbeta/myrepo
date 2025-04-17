@@ -1,8 +1,11 @@
 # myrepo
 METADATA
 Gut Microbiome and Cancer Dataset
+
+Dataset Source:
 Miguel Castaneda, Macquarie University
 miguel.castaneda@mq.edu.au
+This study was done at Macquarie University, by Miguel Castaneda.
 
 Keywords
 biology, cancer, microbiome, microbiology, gut microbiome 
@@ -19,7 +22,6 @@ Variables
 2. Individual - Code for the individual subject
 3. Timepoint - Time when the sample was collected 
 4. Treatment - Treatment applied to each sample
-5. Group 
 6. Strain - Animal strain
 7. Diet - Diet type
 8. Sex - Sex of the sample
