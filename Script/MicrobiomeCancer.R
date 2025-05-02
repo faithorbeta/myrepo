@@ -28,22 +28,6 @@ families_of_interest = c("Akkermansiaceae [Family]", "Prevotellaceae [Family]", 
                          "Eggerthellaceae [Family]", "Lachnospiraceae [Family]", "Bifidobacteriaceae [Family]", "Sutterellaceae [Family]",
                          "Monoglobaceae [Family]", "Oscillospiraceae [Family]", "Lactobacillaceae [Family]", "Enterococcaceae [Family]",
                          "Clostridiaceae [Family]", "Erysipelotrichaceae [Family]", "Erysipelatoclostridiaceae [Family]")
-#######
-# See what columns are available in your data
-colnames(data_filtered)
-
-# Check which of your target families actually exist
-existing_families <- families_of_interest[families_of_interest %in% colnames(data_filtered)]
-
-# And which are missing
-missing_families <- setdiff(families_of_interest, existing_families)
-
-# Print results
-cat("✅ Existing families:\n")
-print(existing_families)
-
-cat("\n❌ Missing families (not found in your data):\n")
-print(missing_families)
 
 
 
@@ -58,7 +42,7 @@ long_data <- family_data %>%
 
 
 # Use only the families that exist
-subset_data <- data_filtered[, c("SampleID", "Timepoint", "Treatment", existing_families)]
+subset_data <- data_filtered[, c("Individual", "Timepoint", "Treatment", existing_families)]
 
 # Reshape to long format
 long_data <- subset_data %>%
@@ -115,7 +99,7 @@ ggplot(filter(long_data, Treatment == "Metronidazole"),
   labs(title = "Metronidazole: Family Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
 
-ggsave("metronidazole_plot.png", width = 10, height = 6, dpi = 300)
+ggsave("metronidazole_plot.png", width = 10, height = 6, dpi = 300, bg="white")
 
 # Plot for Neomycin
 ggplot(filter(long_data, Treatment == "Neomycin"),
@@ -126,7 +110,7 @@ ggplot(filter(long_data, Treatment == "Neomycin"),
   theme_minimal() +
   labs(title = "Neomycin: Family Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
-ggsave("neomycin_plot.png", width = 10, height = 6, dpi = 300)
+ggsave("neomycin_plot.png", width = 10, height = 6, dpi = 300, bg="white")
 
 # Plot for Vancomycin
 ggplot(filter(long_data, Treatment == "Vancomycin"),
@@ -137,7 +121,7 @@ ggplot(filter(long_data, Treatment == "Vancomycin"),
   theme_minimal() +
   labs(title = "Vancomycin: Family Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
-ggsave("vancomycin_plot.png", width = 10, height = 6, dpi = 300)
+ggsave("vancomycin_plot.png", width = 10, height = 6, dpi = 300, bg="white")
 
 
 
@@ -156,6 +140,7 @@ colSums(is.na(data))       # NAs per column
 library(vegan)
 
 cascores = cca(ASV)$CA$u
+
 
 plot(cascores)
 
