@@ -2,8 +2,16 @@ install.packages("usethis")
 library(usethis)
 use_git_config(user.name = 'faithorbeta', user.email = 'faithmarian.orbeta@students.mq.edu.au')
 
-##hi
-data = Dataset_for_Faith
+install.packages("tidyverse")
+library(tidyverse)
+
+install.packages("microeco")
+library(microeco)
+
+install.packages("rstatix")
+library(rstatix)
+
+data = Metadata
 head = data
 
 data = as.data.frame(data)
