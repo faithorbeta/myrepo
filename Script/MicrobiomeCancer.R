@@ -124,8 +124,73 @@ ggplot(filter(long_data, Treatment == "Vancomycin"),
 ggsave("vancomycin_plot.png", width = 10, height = 6, dpi = 300, bg="white")
 
 
+#### FOR METABOLITES
+metabolites_of_interest <- c("Succinate", "Butyrate", "DMF")
 
 
+# For Butyrate
+data_butyrate <- data %>%
+  filter(Treatment == "Butyrate") %>%
+  filter(Timepoint %in% c("Pre-treatment", "Post-treatment"))
+
+# Reshape to long format for Butyrate
+long_data_butyrate <- data_butyrate %>%
+  pivot_longer(cols = all_of(families_of_interest),  # Reshape for all families
+               names_to = "Family",  # Create a new column for Family
+               values_to = "Abundance")  # Store abundance values
+# Plot for Butyrate (All Families)
+ggplot(long_data_butyrate, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  facet_wrap(~Family, scales = "free_y") +  # Facet by Family
+  theme_minimal() +
+  labs(title = "Butyrate: Family-level Abundance Pre vs Post Treatment",
+       x = "Timepoint", y = "Abundance")
+ggsave("butyrate_plot_all_families.png", width = 10, height = 6, dpi = 300, bg="white")
+
+
+# Succinate
+data_succinate <- data %>%
+  filter(Treatment == "Succinate") %>%
+  filter(Timepoint %in% c("Pre-treatment", "Post-treatment"))
+
+long_data_succinate <- data_succinate %>%
+  pivot_longer(cols = all_of(families_of_interest),  # Reshape for all families
+               names_to = "Family",  # Create a new column for Family
+               values_to = "Abundance")  # Store abundance values
+
+# Plot for Succinate (All Families)
+ggplot(long_data_succinate, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  facet_wrap(~Family, scales = "free_y") +  # Facet by Family
+  theme_minimal() +
+  labs(title = "Succinate: Family-level Abundance Pre vs Post Treatment",
+       x = "Timepoint", y = "Abundance")
+
+ggsave("succinate_plot_all_families.png", width = 10, height = 6, dpi = 300, bg="white")
+
+
+# DMF
+data_dmf <- data %>%
+  filter(Treatment == "DMF") %>%
+  filter(Timepoint %in% c("Pre-treatment", "Post-treatment"))
+
+long_data_dmf <- data_dmf %>%
+  pivot_longer(cols = all_of(families_of_interest),  # Reshape for all families
+               names_to = "Family",  # Create a new column for Family
+               values_to = "Abundance")  # Store abundance values
+
+# Plot for DMF (All Families)
+ggplot(long_data_dmf, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  facet_wrap(~Family, scales = "free_y") +  # Facet by Family
+  theme_minimal() +
+  labs(title = "DMF: Family-level Abundance Pre vs Post Treatment",
+       x = "Timepoint", y = "Abundance")
+
+ggsave("dmf_plot_all_families.png", width = 10, height = 6, dpi = 300, bg="white")
 
 treatment = data$Treatment
 
