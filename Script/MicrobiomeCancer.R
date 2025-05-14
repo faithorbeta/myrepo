@@ -224,6 +224,36 @@ ggsave("heatmap.png", plot = heatmap,width = 10, height = 6, dpi = 300, bg="whit
 # Color scale:Red = increased abundance post-treatment; Blue = decreased abundance post-treatment; 
 #White/neutral = little to no change
 
+#t-test for metronidazole timepoint 
+# Function: Paired t-test per family for Metronidazole
+run_ttest_by_family <- function(data, families, treatment_name) {
+  df <- data %>%
+    filter(Treatment == treatment_name) %>%
+    filter(Timepoint %in% c("Pre-treatment", "Post-treatment")) %>%
+    select(Individual, Timepoint, all_of(families)) %>%
+    pivot_longer(cols = all_of(families), names_to = "Family", values_to = "Abundance") %>%
+    pivot_wider(names_from = Timepoint, values_from = Abundance)
+  
+  results <- df %>%
+    group_by(Family) %>%
+    summarise(
+      p_value = tryCatch(
+        t.test(`Pre-treatment`, `Post-treatment`, paired = TRUE)$p.value,
+        error = function(e) NA
+      ),
+      .groups = "drop"
+    ) %>%
+    mutate(p_adj = p.adjust(p_value, method = "fdr"))
+  
+  return(results)
+}
+
+# Run for Metronidazole
+ttest_results_metronidazole <- run_ttest_by_family(data, families_of_interest, "Metronidazole")
+
+# View the results
+print(ttest_results_metronidazole)
+
 
 library(dplyr)
 library(tidyr)
@@ -286,7 +316,6 @@ colSums(is.na(data))       # NAs per column
 library(vegan)
 
 cascores = cca(ASV)$CA$u
-
 
 plot(cascores)
 
@@ -356,59 +385,8 @@ vioplot(pcoascores[t1,1]~data$Treatment[t1], col = hsv(1:8/9))
 
 table(data$Treatment)
 
+# Alpha diversity ####
+microeco = `Faith microeco data`
 
+microeco$cal_alphadiv()
 
-#pre and post treatment
-
-## quality control and filtering
-# check for missing values (NA)
-# filter low abundance
-#normalisation 
-
-## visualise 
-# bar blot X-axis: Treatment Y-axis: Relative abundance (%)
-
-#compare all treatments vs. ASV1
-
-
-#separate variables, ASV, and phylum, class, order, etc into different files? 
-
-
-library(ggplot2)
-colnames(data)[colnames(data) == "ASV_1 [ASV]"] <- "ASV1"
-
-hist (data$ASV1)
-hist(scale(data$ASV1))
-
-hist(data$`ASV_2 [ASV]`)
-hist(scale(data$`ASV_2 [ASV]`))
-
-hist(data$`ASV_3 [ASV]`)
-hist(scale(data$`ASV_3 [ASV]`))
-
-
-# Make sure Treatment is a factor to control the order on the x-axis
-data$Treatment <- factor(data$Treatment, levels = unique(data$Treatment))
-
-# Plot mean ASV1 abundance per treatment
-ggplot(data, aes(x = Treatment, y = ASV1, fill = Treatment)) +
-  geom_bar(stat = "summary", fun = "mean", position = "dodge") +
-  ylab("Mean Relative Abundance of ASV1 (%)") +
-  xlab("Treatment") +
-  ggtitle("ASV1 Abundance Across Treatments") +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-
-levels(data$Treatment)
-
-data$Timepoint <- as.factor(data$Timepoint)
-levels(data$Timepoint)
-
-# Perform a t-test between Pre and Post treatment
-t_test_result <- t.test(ASV1 ~ Timepoint, data = data, subset = Timepoint %in% c("Pre-treatment", "Post-treatment"))
-
-# Print t-test result
-print(t_test_result)
-
-# p value = 0.5397 > 0.05 
