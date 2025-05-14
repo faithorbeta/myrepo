@@ -255,61 +255,6 @@ ttest_results_metronidazole <- run_ttest_by_family(data, families_of_interest, "
 print(ttest_results_metronidazole)
 
 
-library(dplyr)
-library(tidyr)
-
-# Function to run Wilcoxon signed-rank test per family
-run_wilcoxon_by_family <- function(data, families, treatment_name) {
-  # Filter data to the selected treatment and timepoints
-  df <- data %>%
-    filter(Treatment == treatment_name) %>%
-    filter(Timepoint %in% c("Pre-treatment", "Post-treatment")) %>%
-    select(Individual, Timepoint, all_of(families)) %>%
-    pivot_longer(cols = all_of(families), names_to = "Family", values_to = "Abundance") %>%
-    pivot_wider(names_from = Timepoint, values_from = Abundance)
-  
-  # Run test for each family
-  results <- df %>%
-    group_by(Family) %>%
-    summarise(
-      p_value = tryCatch(
-        wilcox.test(`Pre-treatment`, `Post-treatment`, paired = TRUE)$p.value,
-        error = function(e) NA
-      ),
-      .groups = "drop"
-    ) %>%
-    mutate(p_adj = p.adjust(p_value, method = "fdr"))
-  
-  return(results)
-}
-
-wilcoxon_results <- run_wilcoxon_by_family(data, families_of_interest, treatment_name = "Vancomycin")
-print(wilcoxon_results)
-
-#calculate alpha diversity 
-library(vegan)
-if(!requireNamespace("BiocManager")){
-  install.packages("BiocManager")
-}
-BiocManager::install("phyloseq")
-library(phyloseq)
-library(tidyverse)
-library(patchwork)
-library(agricolae)
-library(FSA)
-library(rcompanion)
-
-data_otu <- read.table("data_loue_16S_nonnorm.txt", header = TRUE)
-data_grp <- read.table("data_loue_16S_nonnorm_grp.txt", header=TRUE, stringsAsFactors = TRUE)
-data_taxo <- read.table("data_loue_16S_nonnorm_taxo.txt", header = TRUE)
-
-treatment = data$Treatment
-
-sum(is.na(data))           # Total NAs
-colSums(is.na(data))       # NAs per column
-
-#is there a difference in pre-treatment and post-treatment in ASV1
-
 
 #corresponse analysis
 
