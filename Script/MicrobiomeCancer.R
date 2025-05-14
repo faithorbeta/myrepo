@@ -224,8 +224,8 @@ ggsave("heatmap.png", plot = heatmap,width = 10, height = 6, dpi = 300, bg="whit
 # Color scale:Red = increased abundance post-treatment; Blue = decreased abundance post-treatment; 
 #White/neutral = little to no change
 
-#t-test for metronidazole timepoint 
-# Function: Paired t-test per family for Metronidazole
+#t-test for treatment vs. timepoint ####
+# Function: Paired t-test per family 
 run_ttest_by_family <- function(data, families, treatment_name) {
   df <- data %>%
     filter(Treatment == treatment_name) %>%
@@ -250,15 +250,36 @@ run_ttest_by_family <- function(data, families, treatment_name) {
 
 # Run for Metronidazole
 ttest_results_metronidazole <- run_ttest_by_family(data, families_of_interest, "Metronidazole")
-
-# View the results
 print(ttest_results_metronidazole)
+# Not significant: Acholeplasmataceae [Family], Bacteroidaceae [Family], Muribaculaceae [Family], Rikenellaceae [Family] 
+
+# Run for Vancomycin
+ttest_results_vancomycin <- run_ttest_by_family(data, families_of_interest, "Vancomycin")
+print(ttest_results_vancomycin)
+#Not significant: Clostridiaceae [Family], Erysipelatoclostridiaceae [Family], Lactobacillaceae [Family], Peptococcaceae [Family], Tannerellaceae [Family] 
 
 
+#Run for Neomycin
+ttest_results_neomycin <- run_ttest_by_family(data, families_of_interest, "Neomycin")
+print(ttest_results_neomycin)
+#Significant: Akkermansiaceae [Family], Bacteroidaceae [Family], Bifidobacteriaceae [Family], Deferribacteraceae [Family], Desulfovibrionaceae [Family], 
+#Eggerthellaceae [Family], Enterococcaceae [Family], Erysipelotrichaceae [Family], Lachnospiraceae [Family], Lactobacillaceae [Family], Monoglobaceae [Family], Tannerellaceae [Family] 
 
-#corresponse analysis
+#Run for Succinate
+ttest_results_succinate <- run_ttest_by_family(data, families_of_interest, "Succinate")
+print(ttest_results_succinate)
 
-library(vegan)
+#Run for Butyrate
+ttest_results_butyrate <- run_ttest_by_family(data, families_of_interest, "Butyrate")
+print(ttest_results_butyrate)
+
+#Run for DMF
+ttest_results_dmf <- run_ttest_by_family(data, families_of_interest, "DMF")
+print(ttest_results_dmf)
+
+#corresponse analysis ####
+
+library(vegan) 
 
 cascores = cca(ASV)$CA$u
 
@@ -271,7 +292,7 @@ which(cascores[,1]>4)
 which(cascores[,2]>3.5)
 #metronidazole post treatment good
 
-#PCoA principal coordinates analysis
+#PCoA principal coordinates analysis ####
 
 pcoascores = cmdscale(vegdist(ASV),k=10)
 plot(pcoascores)
@@ -281,7 +302,7 @@ which(pcoascores[,1]>.25 & pcoascores[,1]<.6)
 
 cmdscale(vegdist(ASV),eig=TRUE)
 
-#regression 
+#regression ####
 
 summary(lm(pcoascores[,1] ~ data$Treatment))
 summary(lm(pcoascores[,1] ~ data$Timepoint))
@@ -310,7 +331,7 @@ plot(cascores, cex = as.integer(data$Timepoint)/1.5, col="gray80",bg = hsv(h=as.
 #small = post
 
 
-#violin plot 
+#violin plot ####
 
 library(vioplot)
 
