@@ -268,14 +268,17 @@ print(ttest_results_neomycin)
 #Run for Succinate
 ttest_results_succinate <- run_ttest_by_family(data, families_of_interest, "Succinate")
 print(ttest_results_succinate)
+#Significant: Butyricicoccaceae [Family], Lachnospiraceae [Family], Oscillospiraceae [Family],  Prevotellaceae [Family], Rikenellaceae [Family], Tannerellaceae [Family] 
 
 #Run for Butyrate
 ttest_results_butyrate <- run_ttest_by_family(data, families_of_interest, "Butyrate")
 print(ttest_results_butyrate)
+# No significant difference in any family 
 
 #Run for DMF
 ttest_results_dmf <- run_ttest_by_family(data, families_of_interest, "DMF")
 print(ttest_results_dmf)
+# Significant:  Eggerthellaceae [Family] 
 
 #corresponse analysis ####
 
@@ -286,7 +289,6 @@ cascores = cca(ASV)$CA$u
 plot(cascores)
 
 which(cascores[,1]>4)
-
 #vancomycin post treatment not good ..
 
 which(cascores[,2]>3.5)
@@ -299,8 +301,9 @@ plot(pcoascores)
 
 which(pcoascores[,1]>.6)
 which(pcoascores[,1]>.25 & pcoascores[,1]<.6)
+#same with cascores, metronidazole and vancomycin
 
-cmdscale(vegdist(ASV),eig=TRUE)
+cmdscale(vegdist(ASV),eig=TRUE) #not sure what this is
 
 #regression ####
 
@@ -309,14 +312,14 @@ summary(lm(pcoascores[,1] ~ data$Timepoint))
 
 #pretreatment less bacteria
 
-#intrxn
+#interaction
 summary(lm(pcoascores[,1] ~ data$Timepoint*data$Treatment))
 #lower abundance after treatment
 
 summary(lm(pcoascores[,2] ~ data$Timepoint*data$Treatment))
 #metro has high and vanco has low 
 
-summary(lm (as.integer(data$Timepoint)~pcoascores[,1:4]))
+summary(lm (as.integer(data$Timepoint)~pcoascores[,1:4])) #not working
 #diff group of bacteria that can predict whether they have been treated or not
 
 #bubbleplot 
@@ -324,10 +327,10 @@ summary(lm (as.integer(data$Timepoint)~pcoascores[,1:4]))
 #timepoint
 
 plot(pcoascores, cex = as.integer(data$Timepoint)/1.5, col="gray80",bg = hsv(h=as.integer(data$Treatment)/8), pch = 21, 
-     xlab = "PCoA axis 1", ylab = "PCoA axis 2", xaxs="i", yaxs ="i", bty = "l")
+     xlab = "PCoA axis 1", ylab = "PCoA axis 2", xaxs="i", yaxs ="i", bty = "l") #not working
 
 plot(cascores, cex = as.integer(data$Timepoint)/1.5, col="gray80",bg = hsv(h=as.integer(data$Treatment)/9), pch = 21, 
-     xlab = "PCoA axis 1", ylab = "PCoA axis 2", xaxs="i", yaxs ="i", bty = "l")
+     xlab = "PCoA axis 1", ylab = "PCoA axis 2", xaxs="i", yaxs ="i", bty = "l") #not working
 #small = post
 
 
