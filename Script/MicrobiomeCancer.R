@@ -2,23 +2,15 @@ install.packages("usethis")
 library(usethis)
 use_git_config(user.name = 'faithorbeta', user.email = 'faithmarian.orbeta@students.mq.edu.au')
 
-install.packages("tidyverse")
 library(tidyverse)
-
-install.packages("microeco")
 library(microeco)
-
-install.packages("rstatix")
 library(rstatix)
 
 
 data = Metadata
-head = data
-
 data = as.data.frame(data)
-colnames(data)
 
-existing_families <- families_of_interest[families_of_interest %in% colnames(data_filtered)]
+existing_families <- families_of_interest[families_of_interest %in% colnames(data)]
 
 
 families_of_interest = c("Akkermansiaceae [Family]", "Prevotellaceae [Family]", "Bacteroidaceae [Family]", "Muribaculaceae [Family]",
@@ -50,12 +42,14 @@ long_data <- subset_data %>%
                names_to = "Family",
                values_to = "Abundance")
 
-ggplot(long_data, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+treatment_plot = ggplot(long_data, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
   facet_wrap(~Family, scales = "free_y") +
   theme_minimal() +
   labs(title = "Abundance of Families Pre- and Post-Treatment")
+
+ggsave("treatment_plot.png", plot = treatment_plot, width = 10, height = 6, dpi = 300, bg="white")
 
   
 group_by(family, Timepoint) %>%
@@ -81,16 +75,17 @@ long_data <- subset_data %>%
                names_to = "Family",
                values_to = "Abundance")
 
-ggplot(long_data, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+family_treatment = ggplot(long_data, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
   facet_grid(Family ~ Treatment, scales = "free_y") +
   theme_minimal() +
   labs(title = "Family-level Abundance Pre- and Post-Treatment",
        x = "Timepoint", y = "Abundance")
+ggsave("family treatment.png", plot = family_treatment, width = 10, height = 6, dpi = 300, bg="white")
 
 # Plot for Metronidazole
-ggplot(filter(long_data, Treatment == "Metronidazole"),
+metro = ggplot(filter(long_data, Treatment == "Metronidazole"),
        aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
@@ -99,10 +94,10 @@ ggplot(filter(long_data, Treatment == "Metronidazole"),
   labs(title = "Metronidazole: Family Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
 
-ggsave("metronidazole_plot.png", width = 10, height = 6, dpi = 300, bg="white")
+ggsave("metronidazole_plot.png", plot = metro, width = 10, height = 6, dpi = 300, bg="white")
 
 # Plot for Neomycin
-ggplot(filter(long_data, Treatment == "Neomycin"),
+neo = ggplot(filter(long_data, Treatment == "Neomycin"),
        aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
@@ -110,10 +105,10 @@ ggplot(filter(long_data, Treatment == "Neomycin"),
   theme_minimal() +
   labs(title = "Neomycin: Family Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
-ggsave("neomycin_plot.png", width = 10, height = 6, dpi = 300, bg="white")
+ggsave("neomycin_plot.png", plot = neo, width = 10, height = 6, dpi = 300, bg="white")
 
 # Plot for Vancomycin
-ggplot(filter(long_data, Treatment == "Vancomycin"),
+vanco = ggplot(filter(long_data, Treatment == "Vancomycin"),
        aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
@@ -121,7 +116,7 @@ ggplot(filter(long_data, Treatment == "Vancomycin"),
   theme_minimal() +
   labs(title = "Vancomycin: Family Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
-ggsave("vancomycin_plot.png", width = 10, height = 6, dpi = 300, bg="white")
+ggsave("vancomycin_plot.png", plot = vanco, width = 10, height = 6, dpi = 300, bg="white")
 
 
 #### FOR METABOLITES
@@ -139,14 +134,14 @@ long_data_butyrate <- data_butyrate %>%
                names_to = "Family",  # Create a new column for Family
                values_to = "Abundance")  # Store abundance values
 # Plot for Butyrate (All Families)
-ggplot(long_data_butyrate, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+butyrate = ggplot(long_data_butyrate, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
   facet_wrap(~Family, scales = "free_y") +  # Facet by Family
   theme_minimal() +
   labs(title = "Butyrate: Family-level Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
-ggsave("butyrate_plot_all_families.png", width = 10, height = 6, dpi = 300, bg="white")
+ggsave("butyrate_plot_all_families.png", plot = butyrate, width = 10, height = 6, dpi = 300, bg="white")
 
 
 # Succinate
@@ -160,7 +155,7 @@ long_data_succinate <- data_succinate %>%
                values_to = "Abundance")  # Store abundance values
 
 # Plot for Succinate (All Families)
-ggplot(long_data_succinate, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+succinate = ggplot(long_data_succinate, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
   facet_wrap(~Family, scales = "free_y") +  # Facet by Family
@@ -168,7 +163,7 @@ ggplot(long_data_succinate, aes(x = Timepoint, y = Abundance, fill = Timepoint))
   labs(title = "Succinate: Family-level Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
 
-ggsave("succinate_plot_all_families.png", width = 10, height = 6, dpi = 300, bg="white")
+ggsave("succinate_plot_all_families.png", plot = succinate, width = 10, height = 6, dpi = 300, bg="white")
 
 
 # DMF
@@ -182,7 +177,7 @@ long_data_dmf <- data_dmf %>%
                values_to = "Abundance")  # Store abundance values
 
 # Plot for DMF (All Families)
-ggplot(long_data_dmf, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
+dmf_plot = ggplot(long_data_dmf, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.1, alpha = 0.5) +
   facet_wrap(~Family, scales = "free_y") +  # Facet by Family
@@ -190,7 +185,93 @@ ggplot(long_data_dmf, aes(x = Timepoint, y = Abundance, fill = Timepoint)) +
   labs(title = "DMF: Family-level Abundance Pre vs Post Treatment",
        x = "Timepoint", y = "Abundance")
 
-ggsave("dmf_plot_all_families.png", width = 10, height = 6, dpi = 300, bg="white")
+ggsave("dmf_plot_all_families.png",plot = dmf_plot,  width = 10, height = 6, dpi = 300, bg="white")
+
+
+## heatmap 
+# https://rpubs.com/lumumba99/1026665
+library(dplyr)
+library(tidyr)
+
+# Prepare data: reshape to long format
+long_data <- data %>%
+  filter(Timepoint %in% c("Pre-treatment", "Post-treatment")) %>%
+  filter(Treatment %in% c("Vancomycin", "Neomycin", "Metronidazole", "DMF", "Butyrate", "Succinate")) %>%
+  pivot_longer(cols = all_of(families_of_interest),
+               names_to = "Family",
+               values_to = "Abundance")
+
+# Compute mean pre- and post-treatment abundances for each family and treatment
+fold_change_df <- long_data %>%
+  group_by(Treatment, Family, Timepoint) %>%
+  summarise(mean_abundance = mean(Abundance, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(names_from = Timepoint, values_from = mean_abundance) %>%
+  mutate(log2FC = log2((`Post-treatment` + 1e-6) / (`Pre-treatment` + 1e-6)))  # Add small constant to avoid log(0)
+
+library(ggplot2)
+
+heatmap = ggplot(fold_change_df, aes(x = Treatment, y = Family, fill = log2FC)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                       name = "log2FC") +
+  theme_minimal() +
+  labs(title = "Log2 Fold Change in Abundance (Post vs Pre)",
+       x = "Treatment", y = "Family") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("heatmap.png", plot = heatmap,width = 10, height = 6, dpi = 300, bg="white")
+
+# Color scale:Red = increased abundance post-treatment; Blue = decreased abundance post-treatment; 
+#White/neutral = little to no change
+
+
+library(dplyr)
+library(tidyr)
+
+# Function to run Wilcoxon signed-rank test per family
+run_wilcoxon_by_family <- function(data, families, treatment_name) {
+  # Filter data to the selected treatment and timepoints
+  df <- data %>%
+    filter(Treatment == treatment_name) %>%
+    filter(Timepoint %in% c("Pre-treatment", "Post-treatment")) %>%
+    select(Individual, Timepoint, all_of(families)) %>%
+    pivot_longer(cols = all_of(families), names_to = "Family", values_to = "Abundance") %>%
+    pivot_wider(names_from = Timepoint, values_from = Abundance)
+  
+  # Run test for each family
+  results <- df %>%
+    group_by(Family) %>%
+    summarise(
+      p_value = tryCatch(
+        wilcox.test(`Pre-treatment`, `Post-treatment`, paired = TRUE)$p.value,
+        error = function(e) NA
+      ),
+      .groups = "drop"
+    ) %>%
+    mutate(p_adj = p.adjust(p_value, method = "fdr"))
+  
+  return(results)
+}
+
+wilcoxon_results <- run_wilcoxon_by_family(data, families_of_interest, treatment_name = "Vancomycin")
+print(wilcoxon_results)
+
+#calculate alpha diversity 
+library(vegan)
+if(!requireNamespace("BiocManager")){
+  install.packages("BiocManager")
+}
+BiocManager::install("phyloseq")
+library(phyloseq)
+library(tidyverse)
+library(patchwork)
+library(agricolae)
+library(FSA)
+library(rcompanion)
+
+data_otu <- read.table("data_loue_16S_nonnorm.txt", header = TRUE)
+data_grp <- read.table("data_loue_16S_nonnorm_grp.txt", header=TRUE, stringsAsFactors = TRUE)
+data_taxo <- read.table("data_loue_16S_nonnorm_taxo.txt", header = TRUE)
 
 treatment = data$Treatment
 
