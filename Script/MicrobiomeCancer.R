@@ -57,18 +57,13 @@ group_by(family, Timepoint) %>%
             sd_abundance = sd(Abundance, na.rm = TRUE),
             .groups = "drop")
 
-
 #filter for pre and post
 data_filtered <- data %>%
   filter(Timepoint %in% c("Pre-treatment", "Post-treatment"))
 
-
 antibiotics_of_interest <- c("Metronidazole", "Neomycin", "Vancomycin")
 data_filtered <- data_filtered %>%
   filter(Treatment %in% antibiotics_of_interest)  
-
-
-
 
 long_data <- subset_data %>%
   pivot_longer(cols = all_of(families_of_interest),
@@ -280,7 +275,7 @@ ttest_results_dmf <- run_ttest_by_family(data, families_of_interest, "DMF")
 print(ttest_results_dmf)
 # Significant:  Eggerthellaceae [Family] 
 
-#corresponse analysis ####
+#correspondense analysis ####
 
 library(vegan) 
 
@@ -337,7 +332,6 @@ plot(cascores, cex = as.integer(data$Timepoint)/1.5, col="gray80",bg = hsv(h=as.
 #violin plot ####
 
 library(vioplot)
-
 
 #treatment for pre and treatment for post
 
